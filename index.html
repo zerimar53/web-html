@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello LUCKY Visitor!</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-image: url(back.jpg);
+    background-size: cover;
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-attachment: fixed; /* Ensures the background stays in place while scrolling */
+    background-position: center; /* Centers the image */
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  #name {
+    font-size: 3em;
+    margin-top: 50px;
+    color: rgb(212, 108, 67);
+  }
+
+  #clock {
+    font-size: 12em;
+    margin-top: 20px;
+    color: rgb(226, 116, 110);
+  }
+
+  #date {
+    font-size: 7em;
+    margin-top: 20px;
+    color: rgb(13, 179, 179);
+  }
+
+  /* Media Queries for Responsiveness */
+  
+  /* For screens smaller than 768px (like iPads and smaller tablets) */
+  @media (max-width: 768px) {
+    #name {
+      font-size: 2em;
+    }
+    #clock {
+      font-size: 8em;
+    }
+    #date {
+      font-size: 4em;
+    }
+  }
+
+  /* For screens smaller than 480px (like mobile phones) */
+  @media (max-width: 480px) {
+    #name {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+    #clock {
+      font-size: 4em;
+    }
+    #date {
+      font-size: 2em;
+    }
+  }
+
+  /* Specific styles for mobile landscape mode to prevent large text */
+  @media (max-width: 850px) and (orientation: landscape) {
+    #name {
+      font-size: 1.5em;
+    }
+    #clock {
+      font-size: 3em;
+    }
+    #date {
+      font-size: 1.5em;
+    }
+  }
+
+</style>
+</head>
+<body>
+  
+  <div id="name">&#169;Rolando Ramirez</div>
+  <div id="anchor">
+    <a href="powerball.html"><img src="./powerball.jpg" width="80" style="margin-right: 30px;" alt="BACK HOME"></a>
+    <a href="lottoXshot.html"><img src="./lottoXshot.jpg" width="80"style="margin-right: 30px;" alt="LOTTO"></a>
+    <a href="superlotto.html"><img src="./superLotto.jpg" width="80" alt="LOTTO"></a>
+  </div>
+  
+  <div id="clock"></div>
+  <div id="date"></div>
+
+<script>
+function updateTime() {
+  var now = new Date();
+  var hours = now.getHours();
+  var minutes = now.getMinutes();
+  var seconds = now.getSeconds();
+  var meridiem = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  document.getElementById('clock').textContent = hours + ':' + pad(minutes) + ':' + pad(seconds) + ' ' + meridiem;
+}
+
+function pad(number) { 
+  return (number < 10 ? '0' : '') + number;
+}
+
+function updateDate() {
+  var now = new Date();
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var year = now.getFullYear();
+  var month = months[now.getMonth()];
+  var date = now.getDate();
+  var day = days[now.getDay()];
+  document.getElementById('date').textContent = pad(date) + ' ' + month + ' ' + year + ' ' + day;
+}
+
+updateTime();
+updateDate();
+setInterval(updateTime, 1000);
+setInterval(updateDate, 60000);
+</script>
+</body>
+</html>

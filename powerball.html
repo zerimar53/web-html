@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POWERBALL</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    margin: 0;
+}
+/* New style for the blurred background container */
+.blurred-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('./powerball.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px); /* Adjust the blur level here */
+    z-index: -1;
+}
+/* New style for the content that sits on top of the background */
+.content {
+    position: relative;
+    color: white; /* Changed text color for better contrast */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Make sure content fills the view height */
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.numbers-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.number-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    border-radius: 8px;
+    background-color: #eefca3;
+    box-shadow: 0 4px 15px rgb(19, 19, 18);
+    width: 80px;
+    height: 80px;
+    transition: all 0.3s ease-in-out;
+    color: #333; /* Ensure number text is visible */
+}
+.extra-box {
+    background-color: red; /* Always red for Powerball */
+    box-shadow: 0 4px 15px rgb(22, 22, 22);
+    color: #fff;
+    width: 75px;
+    height: 75px;
+}
+.rolling {
+    animation: roll 0.5s linear infinite;
+    transform-origin: center center;
+}
+@keyframes roll {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+}
+.box-label {
+    margin-top: 5px;
+    font-weight: 600;
+    color: #51f329;
+}
+#anchor {
+    display: flex;
+    margin-bottom: 15px;
+}
+.generate-btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: salmon;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 5px 5px 15px rgb(211, 139, 131);
+    transition: all 0.2s;
+}
+.generate-btn:hover {
+    background-color: rgb(201, 119, 110);
+    transform: translateY(-2px);
+}
+#messageBox {
+    width: 350px;
+    height: 40px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #3bec18;
+    margin-top: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+</style>
+</head>
+<body>
+
+<div class="blurred-bg"></div>
+
+<div class="content">
+    <h1 class="text-3xl font-bold mb-8"> POWERBALL </h1>
+    <div id="anchor">
+        <a href="index.html"><img src="./home.jpg" width="55" style="margin-right: 80px;" alt="BACK HOME"></a>
+        <a href="lottoXshot.html"><img src="./lottoXshot.jpg" width="100"style="margin-right: 80px;" alt="LOTTO"></a>
+        <a href="superlotto.html"><img src="./superLotto.jpg" width="100" alt="LOTTO"></a>
+    </div>
+    <div class="container">
+        <div class="numbers-row">
+            <div class="number-box-container"><div id="box-1" class="number-box">🎲</div><div class="box-label">1st</div></div>
+            <div class="number-box-container"><div id="box-2" class="number-box">🎲</div><div class="box-label">2nd</div></div>
+            <div class="number-box-container"><div id="box-3" class="number-box">🎲</div><div class="box-label">3rd</div></div>
+            <div class="number-box-container"><div id="box-4" class="number-box">🎲</div><div class="box-label">4th</div></div>
+            <div class="number-box-container"><div id="box-5" class="number-box">🎲</div><div class="box-label">5th</div></div>
+            <div class="number-box-container"><div id="box-7" class="number-box extra-box">🎲</div><div class="box-label">Powerball</div></div>
+        </div>
+        <button id="generateBtn" class="generate-btn">
+            Generate Lucky Numbers <br>
+            <span style="color: blue; font-size: 8px; display: block;">&#169; rolandoramirez.com</span>
+        </button>
+        <div id="messageBox"></div>
+    </div>
+</div>
+
+<script>
+    const ROLL_DURATION = 2000;
+    const ROLL_INTERVAL = 50;
+    let isRolling = false;
+    const THANK_YOU_MESSAGES = [
+        "Thank you GOD for this blessings!",
+        "GOD is always good!",
+        "Praise The Lord!",
+        "Bless Us All!",
+        "Hallelujah! Praise the Lord",
+        "Thanks GOD for all the Blessing!",
+        "May The Blessing of GOD be with Us All!",
+        "Lucky Day, Lucky Number!",
+        'May the odds be ever in our favor...',
+        '✝️HALLELUJAH!!!',
+        "🍀🍀🍀",
+        "💲🤑💲",
+        "💰💰💰"
+    ];
+    function pad(num) {
+        return num.toString().padStart(2, '0');
+    }
+    document.getElementById('generateBtn').addEventListener('click', () => {
+        if (isRolling) return;
+        isRolling = true;
+        const generateBtn = document.getElementById('generateBtn');
+        const messageBox = document.getElementById('messageBox');
+        const mainBoxes = document.querySelectorAll('.number-box:not(.extra-box)');
+        const extraBox = document.getElementById('box-7');
+        generateBtn.disabled = true;
+        messageBox.textContent = "";
+        mainBoxes.forEach(box => { box.classList.add('rolling'); box.textContent = '--'; });
+        extraBox.classList.add('rolling');
+        extraBox.textContent = '--';
+        const mainInterval = setInterval(() => {
+            const mainNumbers = new Set();
+            while (mainNumbers.size < 5) {
+                mainNumbers.add(Math.floor(Math.random() * 69) + 1);
+            }
+            [...mainNumbers].sort((a, b) => a - b).forEach((num, index) => {
+                if (mainBoxes[index]) {
+                    mainBoxes[index].textContent = pad(num);
+                }
+            });
+        }, ROLL_INTERVAL);
+        const extraInterval = setInterval(() => {
+            const extra = Math.floor(Math.random() * 26) + 1;
+            extraBox.textContent = pad(extra);
+        }, ROLL_INTERVAL);
+        setTimeout(() => {
+            clearInterval(mainInterval);
+            clearInterval(extraInterval);
+            mainBoxes.forEach(box => box.classList.remove('rolling'));
+            extraBox.classList.remove('rolling');
+            const finalMainNumbers = new Set();
+            while (finalMainNumbers.size < 5) {
+                finalMainNumbers.add(Math.floor(Math.random() * 69) + 1);
+            }
+            [...finalMainNumbers].sort((a, b) => a - b).forEach((num, index) => {
+                if (mainBoxes[index]) {
+                    mainBoxes[index].textContent = pad(num);
+                }
+            });
+            const finalExtra = Math.floor(Math.random() * 26) + 1;
+            extraBox.textContent = pad(finalExtra);
+            generateBtn.disabled = false;
+            isRolling = false;
+            const msg = THANK_YOU_MESSAGES[Math.floor(Math.random() * THANK_YOU_MESSAGES.length)];
+            messageBox.textContent = msg;
+        }, ROLL_DURATION);
+    });
+</script>
+</body>
+</html>

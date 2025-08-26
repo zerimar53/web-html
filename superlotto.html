@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperLotto 6/49</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #f1ebeb;
+    text-align: center;
+    padding: 20px;
+}
+/* This is the new section for the blurred background */
+.blurred-bg {
+    position: fixed; /* Positions the element relative to the browser window */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('./superLotto.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    z-index: -1; /* Pushes the background behind all other content */
+}
+/* The rest of your styles remain unchanged */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.numbers-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.number-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    border-radius: 8px;
+    background-color: #063fb9;
+    box-shadow: 0 4px 15px red;
+    color: orange;
+    width: 80px;
+    height: 80px;
+    transition: all 0.3s ease-in-out;
+}
+.rolling {
+    animation: roll 0.5s linear infinite;
+    transform-origin: center center;
+}
+@keyframes roll {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.box-label { 
+    margin-top: 5px; font-weight: 600; color: #555; 
+    color: black;
+}
+
+
+.generate-btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: rgb(30, 40, 192);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+    transition: all 0.2s;
+}
+
+.generate-btn:hover { 
+    background-color: #ee0e33; transform: translateY(-2px); 
+}
+
+
+#messageBox {
+    width: 350px;
+    height: 40px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #4c8baf;
+    margin-top: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.25px none #4c8baf;
+    border-radius: 8px;
+}
+#anchor {
+    display: flex;
+    margin-bottom: 15px;
+}
+</style>
+</head>
+<body>
+
+<div class="blurred-bg"></div>
+
+<h1 class="text-3xl font-bold mb-8"> <span style="color: blue; font-size: 60px;">SuperLotto 6/49</span> </h1>
+
+<div id="anchor">
+    <a href="index.html"><img src="./home.jpg" width="55" style="margin-right: 80px;" alt="BACK HOME"></a>
+    <a href="powerball.html"><img src="./powerball.jpg" width="100" style="margin-right: 80px;" alt="POWERBALL"></a>
+    <a href="lottoXshot.html"><img src="./lottoXshot.jpg" width="100" alt="LOTTO"></a>
+</div>
+    
+<div class="container">
+    <div class="numbers-row">
+        <div class="number-box-container"><div id="box-1" class="number-box">🎲</div><div class="box-label">1st</div></div>
+        <div class="number-box-container"><div id="box-2" class="number-box">🎲</div><div class="box-label">2nd</div></div>
+        <div class="number-box-container"><div id="box-3" class="number-box">🎲</div><div class="box-label">3rd</div></div>
+        <div class="number-box-container"><div id="box-4" class="number-box">🎲</div><div class="box-label">4th</div></div>
+        <div class="number-box-container"><div id="box-5" class="number-box">🎲</div><div class="box-label">5th</div></div>
+        <div class="number-box-container"><div id="box-6" class="number-box">🎲</div><div class="box-label">6th</div></div>
+    </div>
+    <button id="generateBtn" class="generate-btn">
+        Generate Lucky Numbers <br>
+        <span style="color: rgb(54, 252, 36); font-size: 10px; display: block; margin-bottom: 0;">&#169rolando@ramirez.com
+        </span>
+    </button>
+    <div id="messageBox"></div>
+</div>
+
+<script>
+const ROLL_DURATION = 2000;
+const ROLL_INTERVAL = 50;
+let isRolling = false;
+const THANK_YOU_MESSAGES = [
+    "Thank you GOD for this blessings!",
+    "GOD is always good!",
+    "Praise The Lord!",
+    "Bless Us All!",
+    "Hallelujah! Praise the Lord",
+    "Thanks GOD for all the Blessing!",
+    "May The Blessing of GOD be with Us All!",
+    "Lucky Day, Lucky Number!",
+    'May the odds be ever in our favor...',
+    '✝️HALLELUJAH!!!',
+    "🍀🍀🍀",
+    "💲🤑💲",
+    "💰💰💰"
+];
+function pad(num){ return num.toString().padStart(2,'0'); }
+document.getElementById('generateBtn').addEventListener('click', () => {
+    if(isRolling) return;
+    isRolling = true;
+    const generateBtn = document.getElementById('generateBtn');
+    const messageBox = document.getElementById('messageBox');
+    const boxes = document.querySelectorAll('.number-box');
+    generateBtn.disabled = true;
+    messageBox.textContent = "";
+    boxes.forEach(box => { box.classList.add('rolling'); box.textContent = '--'; });
+    const mainInterval = setInterval(() => {
+        const mainNumbers = new Set();
+        while(mainNumbers.size < 6) mainNumbers.add(Math.floor(Math.random()*50)+1);
+        [...mainNumbers].sort((a,b)=>a-b).forEach((num,index)=>{
+            document.getElementById(`box-${index+1}`).textContent = pad(num);
+        });
+    }, ROLL_INTERVAL);
+    setTimeout(() => {
+        clearInterval(mainInterval);
+        boxes.forEach(box => box.classList.remove('rolling'));
+        const finalMainNumbers = new Set();
+        while(finalMainNumbers.size < 6) finalMainNumbers.add(Math.floor(Math.random()*50)+1);
+        [...finalMainNumbers].sort((a,b)=>a-b).forEach((num,index)=>{
+            document.getElementById(`box-${index+1}`).textContent = pad(num);
+        });
+        generateBtn.disabled = false;
+        isRolling = false;
+        const msg = THANK_YOU_MESSAGES[Math.floor(Math.random()*THANK_YOU_MESSAGES.length)];
+        messageBox.textContent = msg;
+    }, ROLL_DURATION);
+});
+</script>
+</body>
+</html>
