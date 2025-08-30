@@ -124,6 +124,10 @@ body {
     align-items: center;
     border-radius: 8px;
 }
+/* New CSS class to hide the Powerball box container */
+.hidden-powerball {
+    display: none;
+}
 </style>
 </head>
 <body>
@@ -138,13 +142,17 @@ body {
         <a href="superlotto.html"><img src="./superLotto.jpg" width="100" alt="LOTTO"></a>
     </div>
     <div class="container">
+        <div class="flex items-center space-x-2 my-4">
+            <input type="checkbox" id="powerballToggle" class="form-checkbox h-5 w-5 text-red-600">
+            <label for="powerballToggle" class="text-white font-medium">Include Powerball</label>
+        </div>
         <div class="numbers-row">
             <div class="number-box-container"><div id="box-1" class="number-box">🎲</div><div class="box-label">1st</div></div>
             <div class="number-box-container"><div id="box-2" class="number-box">🎲</div><div class="box-label">2nd</div></div>
             <div class="number-box-container"><div id="box-3" class="number-box">🎲</div><div class="box-label">3rd</div></div>
             <div class="number-box-container"><div id="box-4" class="number-box">🎲</div><div class="box-label">4th</div></div>
             <div class="number-box-container"><div id="box-5" class="number-box">🎲</div><div class="box-label">5th</div></div>
-            <div class="number-box-container"><div id="box-7" class="number-box extra-box">🎲</div><div class="box-label">Powerball</div></div>
+            <div id="powerballBoxContainer" class="number-box-container"><div id="box-7" class="number-box extra-box">🎲</div><div class="box-label">Powerball</div></div>
         </div>
         <button id="generateBtn" class="generate-btn">
             Generate Lucky Numbers <br>
@@ -176,6 +184,20 @@ body {
     function pad(num) {
         return num.toString().padStart(2, '0');
     }
+    // Added a constant for the powerball container
+    const powerballBoxContainer = document.getElementById('powerballBoxContainer');
+    // Added a constant for the checkbox
+    const powerballToggle = document.getElementById('powerballToggle');
+    // Initial state: checked by default
+    powerballToggle.checked = true;
+    // The event listener for the checkbox
+    powerballToggle.addEventListener('change', (event) => {
+        if (event.target.checked) {
+            powerballBoxContainer.classList.remove('hidden-powerball');
+        } else {
+            powerballBoxContainer.classList.add('hidden-powerball');
+        }
+    });
     document.getElementById('generateBtn').addEventListener('click', () => {
         if (isRolling) return;
         isRolling = true;
@@ -186,8 +208,11 @@ body {
         generateBtn.disabled = true;
         messageBox.textContent = "";
         mainBoxes.forEach(box => { box.classList.add('rolling'); box.textContent = '--'; });
-        extraBox.classList.add('rolling');
-        extraBox.textContent = '--';
+        // Only roll the powerball if the checkbox is checked
+        if (powerballToggle.checked) {
+            extraBox.classList.add('rolling');
+            extraBox.textContent = '--';
+        }
         const mainInterval = setInterval(() => {
             const mainNumbers = new Set();
             while (mainNumbers.size < 5) {
@@ -199,15 +224,22 @@ body {
                 }
             });
         }, ROLL_INTERVAL);
-        const extraInterval = setInterval(() => {
-            const extra = Math.floor(Math.random() * 26) + 1;
-            extraBox.textContent = pad(extra);
-        }, ROLL_INTERVAL);
+        let extraInterval;
+        if (powerballToggle.checked) {
+            extraInterval = setInterval(() => {
+                const extra = Math.floor(Math.random() * 26) + 1;
+                extraBox.textContent = pad(extra);
+            }, ROLL_INTERVAL);
+        }
         setTimeout(() => {
             clearInterval(mainInterval);
-            clearInterval(extraInterval);
+            if (extraInterval) {
+                clearInterval(extraInterval);
+            }
             mainBoxes.forEach(box => box.classList.remove('rolling'));
-            extraBox.classList.remove('rolling');
+            if (powerballToggle.checked) {
+                extraBox.classList.remove('rolling');
+            }
             const finalMainNumbers = new Set();
             while (finalMainNumbers.size < 5) {
                 finalMainNumbers.add(Math.floor(Math.random() * 69) + 1);
@@ -217,8 +249,10 @@ body {
                     mainBoxes[index].textContent = pad(num);
                 }
             });
-            const finalExtra = Math.floor(Math.random() * 26) + 1;
-            extraBox.textContent = pad(finalExtra);
+            if (powerballToggle.checked) {
+                const finalExtra = Math.floor(Math.random() * 26) + 1;
+                extraBox.textContent = pad(finalExtra);
+            }
             generateBtn.disabled = false;
             isRolling = false;
             const msg = THANK_YOU_MESSAGES[Math.floor(Math.random() * THANK_YOU_MESSAGES.length)];
